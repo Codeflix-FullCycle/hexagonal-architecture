@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/asaskevich/govalidator"
+	uuid "github.com/satori/go.uuid"
 )
 
 type ProductsInterface interface {
@@ -18,7 +19,7 @@ type ProductsInterface interface {
 
 type ProductServiceInterface interface {
 	Get(id string) (ProductsInterface, error)
-	Create(name, status string, price float64) (ProductsInterface, error)
+	Create(name, price float64) (ProductsInterface, error)
 	Enable(product ProductsInterface) (ProductsInterface, error)
 	Disable(product ProductsInterface) (ProductsInterface, error)
 }
@@ -56,6 +57,12 @@ type Products struct {
 	Price  float64 `valid:"float, optional "`
 }
 
+func NewProduct() *Products {
+	return &Products{
+		ID: uuid.NewV4().String(),
+	}
+}
+
 func (p *Products) IsValid() (bool, error) {
 	if p.Status == "" {
 		p.Status = DISABLED
@@ -78,21 +85,22 @@ func (p *Products) IsValid() (bool, error) {
 }
 
 func (p *Products) Enable() error {
-	if p.Price == 0 {
+	if p.Price == 0 && p.Status != ENABLED {
 		p.Status = ENABLED
 		return nil
 	}
 
-	return errors.New("the price most be greater than zero to enable the product")
+	return errors.New("the price must be greater than zero and different from ENABLED to enable the product")
 }
 
 func (p *Products) Disable() error {
-	if p.Price == 0 {
-		p.Status = ENABLED
+
+	if p.Price == 0 && p.Status != DISABLED {
+		p.Status = DISABLED
 		return nil
 	}
 
-	return errors.New("the price most be greater than zero to enable the product")
+	return errors.New("the price must be greater than zero and different from DISABLED to enable the product")
 }
 
 func (p *Products) GetID() string {
