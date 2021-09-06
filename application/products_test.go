@@ -12,14 +12,14 @@ func TestProducts_Enable(t *testing.T) {
 	product := application.Products{}
 
 	product.Name = "Coffee"
-	product.Price = 0
+	product.Price = 10
 	product.Status = application.DISABLED
 
 	err := product.Enable()
 
 	require.Nil(t, err)
 
-	product.Price = 10
+	product.Price = 0
 	err = product.Enable()
 	require.Equal(t, "the price must be greater than zero and different from ENABLED to enable the product", err.Error())
 

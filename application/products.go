@@ -19,7 +19,7 @@ type ProductsInterface interface {
 
 type ProductServiceInterface interface {
 	Get(id string) (ProductsInterface, error)
-	Create(name, price float64) (ProductsInterface, error)
+	Create(name string, price float64) (ProductsInterface, error)
 	Enable(product ProductsInterface) (ProductsInterface, error)
 	Disable(product ProductsInterface) (ProductsInterface, error)
 }
@@ -85,7 +85,7 @@ func (p *Products) IsValid() (bool, error) {
 }
 
 func (p *Products) Enable() error {
-	if p.Price == 0 && p.Status != ENABLED {
+	if p.Price != 0 && p.Status != ENABLED {
 		p.Status = ENABLED
 		return nil
 	}
