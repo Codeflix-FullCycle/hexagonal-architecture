@@ -50,6 +50,5 @@ func Run(service application.ProductServiceInterface, action string, productId s
 			res.GetID(), res.GetName(), res.GetPrice(), res.GetStatus())
 	}
 
-	fmt.Println(result)
 	return result, nil
 }
