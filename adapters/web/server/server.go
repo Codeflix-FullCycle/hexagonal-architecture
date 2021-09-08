@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/Codeflix-FullCycle/hexagonal-architecture/adapters/web/handler"
 	"github.com/Codeflix-FullCycle/hexagonal-architecture/application"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
@@ -23,7 +24,12 @@ func MakeNewWebServer(Service application.ProductServiceInterface) *WebServer {
 
 func (w *WebServer) Serve() {
 	r := mux.NewRouter()
-	n := negroni.NewLogger()
+	n := negroni.New(
+		negroni.NewLogger(),
+	)
+
+	handler.MakeProductHandlers(r, n, w.Service)
+	http.Handle("/", r)
 
 	server := &http.Server{
 		Addr:              ":8080",
